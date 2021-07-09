@@ -30,17 +30,12 @@ ul {
 	padding: 0px;
 }
 
-ul div {
+
+li {
 	margin: 5px;
 	background-color: #D7D8C9;
 	padding: 10px;
-}
-
-
-li {
-	list-style: none;	
-	padding: 5px;
-	margin: 0px;
+	list-style: none;
 }
 
 li h4 {

@@ -33,15 +33,17 @@
     <!-- todo list 불러오기 -->
     <script>
       function getList (list, sectionId) {
-    	  for (idx in list){
-        	  var element = document.querySelector(sectionId + " > ul");
-        	  element.innerHTML += "<div id='"+list[idx].type+ "-" + list[idx].id+"-li'><li><h4>"+ list[idx].title + "</h4>" 
-        	  + "<p>등록날짜: "+ list[idx].regdate.substr(0,10).replace(/-/g, '.') + ", " + list[idx].name +", 우선순위 " + list[idx].sequence + "</p></li></div>"
+    	  list.forEach(function(v){
+    		  var element = document.querySelector(sectionId + " > ul");
+        	  element.innerHTML += "<li id='li-"+ v.id +"'><h4>"+ v.title + "</h4>" 
+        	  + "<p>등록날짜: "+ v.regdate.substr(0,10).replace(/-/g, '.') + ", " + v.name +", 우선순위 " + v.sequence + "</p></li>"
         	  if (sectionId != "#done-section"){
-        		  element.innerHTML += "<span><button id="+list[idx].type+ "-" + list[idx].id +" class='type-update-btn' onclick='clickEvent(this.id)'> → </button></span>";
-	        	  document.getElementById(list[idx].type+ "-" + list[idx].id+"-li").getElementsByTagName("li")[0].appendChild(document.getElementById(list[idx].type+ "-" + list[idx].id));
-        	  }
-          }
+        		  // element.innerHTML += "<span><button id="+list[idx].type+ "-" + list[idx].id +" class='type-update-btn' onclick='clickEvent(this.id)'> → </button></span>";
+        		  var btn = "<span><button id='"+v.type+"-"+v.id+"' class='type-update-btn' onclick='clickEvent(this.id)'> → </button></span>";
+	        	  var li = document.querySelector("#li-"+ v.id +" > p");
+	        	  li.insertAdjacentHTML("afterend", btn);
+    	      }
+          })      	
       }
 	  
       var todoList = ${todoList}
@@ -63,15 +65,15 @@
 	   	oReq.onreadystatechange = function () {
 	   	    if (oReq.readyState == 4 && oReq.status == 200){
 	   	    	var section = document.getElementById(data.type+"-section-ul");
-	   	    	var content = document.getElementById(prior+'-'+data.id+"-li");
+	   	    	var content = document.getElementById("li-" + data.id);
 	   	    	section.appendChild(content);	   	        
-	   	        if(data.type === "done"){
+	   	        if(data.type == "done"){
 	   	        	//버튼 삭제
-	   	        	content.remove(content.getElementsByTagName("button"));
-	   	        } else{
-	   	        	// 버튼 id 변경
-	   	        	content.getElementsByTagName("button").id = data.type+'-'+data.id+"-li";
+	   	        	document.getElementById(prior + '-' + data.id).remove();
+	   	        } else {
+	   	        	document.getElementById(prior + '-' + data.id).id = data.type+'-'+ data.id;
 	   	        }
+	   	        console.log("success");
 	   	    } 
 	   	 }
 	   	 oReq.send(JSON.stringify(data));
@@ -81,13 +83,13 @@
 		  var tmp = text.split("-");
 		  switch (tmp[0]){
 		  case "todo":
-			  var data = {type : "doing", id: tmp[1] }
+			  var data = {type : "doing", id: tmp[1] };
 			  break;
 		  case "doing":
-			  var data = {type : "done", id: tmp[1] }
+			  var data = {type : "done", id: tmp[1] };
 			  break;
 		  }
-		  ajax(tmp[0], data)
+		  ajax(tmp[0], data);
 	  }
 	  
    	</script>

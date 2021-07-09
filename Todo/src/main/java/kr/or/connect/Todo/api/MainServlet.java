@@ -50,9 +50,8 @@ public class MainServlet extends HttpServlet {
 			String json = objectMapper.writeValueAsString(list);
 				
 			request.setAttribute(valueList[i], json);			
+//			System.out.println(list);			
 		}
-		
-			
 		RequestDispatcher requestDispatcher = request.getRequestDispatcher("/main.jsp");
 		requestDispatcher.forward(request, response);
 	}
@@ -64,7 +63,7 @@ public class MainServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		request.setCharacterEncoding("UTF-8");
-		
+		request.setAttribute("updateResult", 0);
 		ObjectMapper mapper = new ObjectMapper();
 		TodoDto todoDto = new TodoDto();
 		try {
@@ -72,8 +71,10 @@ public class MainServlet extends HttpServlet {
 			todoDto = mapper.readValue(reader.readLine(), TodoDto.class);
 			
 			TodoDao dao = new TodoDao();
-			dao.updateTodo(todoDto);
-			
+			int result = dao.updateTodo(todoDto);
+			if (result == 1) {
+				System.out.println("success");
+			}
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
